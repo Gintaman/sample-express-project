@@ -1,0 +1,14 @@
+{
+  "name": "mean",
+  "version": "1.0.0",
+  "description": "Sandbox for mongodb/react/express/nginx",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeffrey Chen",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.1"
+  }
+}
