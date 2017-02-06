@@ -2,22 +2,18 @@
 
 const express = require('express'),
 	app = express(),
-	handlebars = require('express-handlebars').create({defaultLayout: 'main'});
-
-const fortunes = [
-	"Conquer your fears or they will conquer you.",
-	"Rivers need springs.",
-	"Do not fear what you don't know.",
-	"You will have a pleasant surprise.",
-	"Whenever possible, keep it simple.",
-	"Man who drops watch in toilet, bound to have shitty time."
-];
+	handlebars = require('express-handlebars').create({defaultLayout: 'main'}),
+	fortune = require('./node_modules/lib/fortune.js');
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', process.env.PORT || 3000);
 
-app.use(express.static(`${__dirname}/public`));
+//middle ware for detecting test routes
+app.use((req, res, next) => {
+	res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
+	next();
+});
 
 //view engine returns content of type text/html and default status code 200
 app.get('/', (req, res) => {
@@ -27,9 +23,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-	let randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-	res.render('about', {fortune: randomFortune});
+	res.render('about', {
+		fortune: fortune.getFortune(),
+		pageTestScript: '/qa/tests-about.js'
+	});
 });
+
+//the following 2 routes fail if placed after  the 404 and 500 middleware
+app.get('/tours/hood-river', (req, res) => {
+	res.render('tours/hood-river');
+});
+
+app.get('/tours/request-group-rate', (req, res) => {
+	res.render('tours/request-group-rate');
+});
+
+app.use(express.static(`${__dirname}/public`));
 
 //need to manually set status code here and for 500
 app.use((req, res) => {
