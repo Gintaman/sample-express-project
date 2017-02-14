@@ -38,7 +38,7 @@ app.get('/tours/request-group-rate', (req, res) => {
 	res.render('tours/request-group-rate');
 });
 
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/client/public`));
 
 //need to manually set status code here and for 500
 app.use((req, res) => {
